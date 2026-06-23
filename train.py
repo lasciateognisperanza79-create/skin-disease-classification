@@ -31,12 +31,38 @@ EPOCHS_STAGE2   = 20
 NUM_CLASSES     = 3
 CLASS_NAMES     = ['allergy', 'chickenpox', 'normal']
 
-# Загрузка данных 
-print("Загрузка датасетов...")
-!kaggle datasets download -d dipuiucse/monkeypoxskinimagedataset -p /content/monkeypox_data --unzip -q
+# Настройка Kaggle и загрузка всех датасетов
+KAGGLE_TOKEN = 'ваш_токен'   # замените на свой токен
 
-RAW_DIR = '/content/datasets_raw'          
-EXTRA_DIR = '/content/monkeypox_data'     
+# Настройка Kaggle API
+os.environ['KAGGLE_API_TOKEN'] = KAGGLE_TOKEN
+os.makedirs(os.path.expanduser('~/.kaggle'), exist_ok=True)
+with open(os.path.expanduser('~/.kaggle/access_token'), 'w') as f:
+    f.write(KAGGLE_TOKEN)
+os.chmod(os.path.expanduser('~/.kaggle/access_token'), 0o600)
+print("Kaggle API configured.")
+
+RAW_DIR = '/content/datasets_raw'
+EXTRA_DIR = '/content/monkeypox_data'
+os.makedirs(RAW_DIR, exist_ok=True)
+os.makedirs(EXTRA_DIR, exist_ok=True)
+
+print("Загрузка датасетов...")
+
+# Скачиваем все основные датасеты
+!kaggle datasets download -d shubhamgoel27/dermnet -p {RAW_DIR} --unzip -q
+!kaggle datasets download -d subirbiswas19/skin-disease-dataset -p {RAW_DIR} --unzip -q
+!kaggle datasets download -d kmader/skin-cancer-mnist-ham10000 -p {RAW_DIR} --unzip -q
+!kaggle datasets download -d ismailpromus/skin-diseases-image-dataset -p {RAW_DIR} --unzip -q
+!kaggle datasets download -d egwusam/mpox-data -p {RAW_DIR} --unzip -q
+!kaggle datasets download -d dipuiucse/monkeypoxskinimagedataset -p {EXTRA_DIR} --unzip -q
+!git clone --quiet https://github.com/mattgroh/fitzpatrick17k.git {RAW_DIR}/fitzpatrick17k 2>/dev/null
+
+# Удаляем zip-архивы
+!find {RAW_DIR} -name "*.zip" -delete
+!find {EXTRA_DIR} -name "*.zip" -delete
+
+print("Все датасеты загружены и распакованы.")    
 
 def find_images(base_dir, target_class):
     images = []
