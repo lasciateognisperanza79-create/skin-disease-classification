@@ -4,6 +4,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
+from sklearn.utils.class_weight import compute_class_weight   # <--- добавьте это
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 from tensorflow.keras import mixed_precision
 from tensorflow.keras.applications import ResNet50
@@ -56,6 +57,10 @@ print("Загрузка датасетов...")
 !kaggle datasets download -d ismailpromus/skin-diseases-image-dataset -p {RAW_DIR} --unzip -q
 !kaggle datasets download -d egwusam/mpox-data -p {RAW_DIR} --unzip -q
 !kaggle datasets download -d dipuiucse/monkeypoxskinimagedataset -p {EXTRA_DIR} --unzip -q
+!kaggle datasets download -d ahmedmunim/monkeypox-aug-munim -p {RAW_DIR} --unzip -q
+!kaggle datasets download -d sijanbhandari/skindiseasedataset22class -p {RAW_DIR} --unzip -q
+
+# Fitzpatrick17k (GitHub)
 !git clone --quiet https://github.com/mattgroh/fitzpatrick17k.git {RAW_DIR}/fitzpatrick17k 2>/dev/null
 
 # Удаляем zip-архивы
